@@ -1,0 +1,90 @@
+[
+  {
+    "id": "R5-A",
+    "rung": 5,
+    "prompt": "Implement inventory(start,events). Copy start (dict SKU->nonnegative quantity). Events are (SKU,delta) pairs. Missing SKU starts at zero. Apply in order; if an event would make a quantity negative, reject that entire event. Return the final dict without mutating inputs.",
+    "tests": "a={'x':2}; e=[('x',-5),('y',3),('x',1)]; assert inventory(a,e)=={'x':3,'y':3}; assert a=={'x':2}\nassert inventory({},[])=={}",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 2,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. The final contract requires inventory({\"x\":2},[(\"x\",-5)]) to equal both {\"x\":2} and {\"x\":0}. Both requirements are mandatory, with neither taking priority.",
+      "expected": "UNKNOWN"
+    },
+    "turn2": "Requirement change: instead of rejecting an event that would go negative, fulfill it partially by clamping that SKU to zero. All other requirements remain.",
+    "final_tests": "a={'x':2}; e=[('x',-5),('y',3),('x',1)]; assert inventory(a,e)=={'x':1,'y':3}; assert a=={'x':2}; assert e==[('x',-5),('y',3),('x',1)]\nassert inventory({},[('z',-2)])=={'z':0}\nassert inventory({},[])=={}",
+    "conflict_tests": "assert inventory({'x':2},[('x',-5)])=={'x':2}",
+    "final_reference": "def inventory(start,events):\n d=dict(start)\n for k,v in events:d[k]=max(0,d.get(k,0)+v)\n return d"
+  },
+  {
+    "id": "R5-B",
+    "rung": 5,
+    "prompt": "Implement leaderboard(events,k): events are (name,points) pairs. Sum points by exact name, sort descending total then ascending name, return at most max(0,k) pairs (name,total). Do not mutate input.",
+    "tests": "e=[('b',3),('a',3),('b',-1),('c',2)]; assert leaderboard(e,3)==[('a',3),('b',2),('c',2)]\nassert leaderboard([],3)==[]\nassert leaderboard(e,0)==[]",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 2,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Return a unique leaderboard from events that were never provided. No defaults or guesses are allowed.",
+      "expected": "UNKNOWN"
+    },
+    "turn2": "Requirement change: ties now use first appearance in events, NOT alphabetical order. All other requirements remain.",
+    "final_tests": "e=[('z',2),('a',3),('z',1),('m',-1)]; import copy; before=copy.deepcopy(e); assert leaderboard(e,3)==[('z',3),('a',3),('m',-1)]; assert e==before\nassert leaderboard([],1)==[]\nassert leaderboard(e,-1)==[]",
+    "conflict_tests": "assert leaderboard([('z',3),('a',3)],2)==[('a',3),('z',3)]",
+    "final_reference": "def leaderboard(events,k):\n d={}\n for n,p in events:d[n]=d.get(n,0)+p\n return sorted(d.items(),key=lambda x:-x[1])[:max(0,k)]"
+  },
+  {
+    "id": "R5-C",
+    "rung": 5,
+    "prompt": "Implement schedule(jobs,limit): jobs are (id,release,duration), nonnegative integer times. Process input order on one worker starting at time zero; start=max(current,release), finish=start+duration. Include (id,start,finish) only if finish<=limit; a rejected job does not advance current. Do not mutate jobs.",
+    "tests": "assert schedule([('a',0,3),('b',1,8),('c',2,2)],6)==[('a',0,3),('c',3,5)]\nassert schedule([],9)==[]",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 2,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Produce a schedule where a single worker runs two duration-5 jobs both starting at 0 and ending at 5, with no overlap allowed and no second worker.",
+      "expected": "UNKNOWN"
+    },
+    "turn2": "Requirement change: process jobs by increasing release time, preserving input order for ties. All other requirements remain.",
+    "final_tests": "a=[('late',5,2),('first',0,3),('tie',0,1),('huge',1,99),('last',4,1)]; b=list(a); assert schedule(a,8)==[('first',0,3),('tie',3,4),('last',4,5),('late',5,7)]; assert a==b\nassert schedule([],0)==[]\nassert schedule([('x',0,0)],0)==[('x',0,0)]",
+    "conflict_tests": "assert schedule([('b',5,1),('a',0,1)],9)==[('b',5,6),('a',6,7)]",
+    "final_reference": "def schedule(jobs,limit):\n out=[]; now=0\n for id,r,d in sorted(jobs,key=lambda j:j[1]):\n  s=max(now,r); f=s+d\n  if f<=limit:out.append((id,s,f)); now=f\n return out"
+  },
+  {
+    "id": "R5-D",
+    "rung": 5,
+    "prompt": "Implement runs(values): run-length encode consecutive equal values as (value,count) pairs. Return [] for empty input; do not mutate input. Values are integers.",
+    "tests": "assert runs([2,2,3,2])==[(2,2),(3,1),(2,1)]\nassert runs([])==[]",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 2,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Return runs([2,2]) with one tuple required to have exactly 2 elements and exactly 3 elements simultaneously.",
+      "expected": "UNKNOWN"
+    },
+    "turn2": "Requirement change: each run is now (value,start,end), zero-based half-open positions, NOT (value,count). Preserve all other behavior.",
+    "final_tests": "a=[2,2,3,2]; assert runs(a)==[(2,0,2),(3,2,3),(2,3,4)]; assert a==[2,2,3,2]\nassert runs([])==[]\nassert runs([0])==[(0,0,1)]\nassert runs([-1,-1])==[(-1,0,2)]",
+    "conflict_tests": "assert runs([2,2,3])==[(2,2),(3,1)]",
+    "final_reference": "def runs(values):\n out=[]\n for i,v in enumerate(values):\n  if out and out[-1][0]==v:out[-1]=(v,out[-1][1],i+1)\n  else:out.append((v,i,i+1))\n return out"
+  }
+]

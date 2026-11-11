@@ -1,0 +1,54 @@
+{
+  "R6-A": {
+    "files": {
+      "solution.py": "def clamp(x,lo,hi):\n if lo>hi: raise ValueError(\"bounds\")\n return max(lo,min(x,hi))\n",
+      "test_solution.py": "import pytest\nfrom solution import *\ndef test_contract():\n assert clamp(5,0,10)==5\n assert clamp(-2,0,10)==0\n assert clamp(12,0,10)==10\n assert clamp(3,3,3)==3\n assert clamp(-5,-9,-2)==-5\n with pytest.raises(ValueError): clamp(1,3,2)\n"
+    }
+  },
+  "R6-B": {
+    "files": {
+      "solution.py": "def chunks(xs,n):\n if n<=0: raise ValueError(\"size\")\n return [xs[i:i+n] for i in range(0,len(xs),n)]\n",
+      "test_solution.py": "import pytest\nfrom solution import *\ndef test_contract():\n assert chunks([],2)==[]\n assert chunks([1,2,3,4,5],2)==[[1,2],[3,4],[5]]\n assert chunks([1,2],4)==[[1,2]]\n x=[1,2,3]; chunks(x,2); assert x==[1,2,3]\n with pytest.raises(ValueError): chunks([1],0)\n with pytest.raises(ValueError): chunks([1],-1)\n"
+    }
+  },
+  "R6-C": {
+    "files": {
+      "solution.py": "def unique(xs):\n return list(dict.fromkeys(xs))\n",
+      "test_solution.py": "import pytest\nfrom solution import *\ndef test_contract():\n assert unique([])==[]\n assert unique([3,1,3,2,1])==[3,1,2]\n assert unique([-1,0,-1,2])==[-1,0,2]\n x=[3,1,3]; unique(x); assert x==[3,1,3]\n"
+    }
+  },
+  "R6-D": {
+    "files": {
+      "solution.py": "def runs(xs):\n out=[]\n for x in xs:\n  if out and out[-1][0]==x: out[-1]=(x,out[-1][1]+1)\n  else: out.append((x,1))\n return out\n",
+      "test_solution.py": "import pytest\nfrom solution import *\ndef test_contract():\n assert runs([])==[]\n assert runs([1])==[(1,1)]\n assert runs([2,2,1,2,2,2])==[(2,2),(1,1),(2,3)]\n assert runs([-1,-1,0])==[(-1,2),(0,1)]\n x=[2,1,2]; runs(x); assert x==[2,1,2]\n"
+    }
+  },
+  "R7-A": {
+    "files": {
+      "pkg/config.py": "def options(factor=1):\n return {'factor': factor}\n",
+      "pkg/core.py": "def transform(values,factor=1):\n return [x * factor for x in values]\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values,factor=1):\n return transform(values,**options(factor=factor))\n"
+    }
+  },
+  "R7-B": {
+    "files": {
+      "pkg/config.py": "def options(amount=0):\n return {'amount': amount}\n",
+      "pkg/core.py": "def transform(values,amount=0):\n return [x + amount for x in values]\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values,amount=0):\n return transform(values,**options(amount=amount))\n"
+    }
+  },
+  "R7-C": {
+    "files": {
+      "pkg/config.py": "def options(minimum=None):\n return {'minimum': minimum}\n",
+      "pkg/core.py": "def transform(values,minimum=None):\n return [x if minimum is None else max(x,minimum) for x in values]\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values,minimum=None):\n return transform(values,**options(minimum=minimum))\n"
+    }
+  },
+  "R7-D": {
+    "files": {
+      "pkg/config.py": "def options(maximum=None):\n return {'maximum': maximum}\n",
+      "pkg/core.py": "def transform(values,maximum=None):\n return [x if maximum is None else min(x,maximum) for x in values]\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values,maximum=None):\n return transform(values,**options(maximum=maximum))\n"
+    }
+  }
+}

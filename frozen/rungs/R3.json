@@ -1,0 +1,98 @@
+[
+  {
+    "id": "R3-A",
+    "rung": 3,
+    "prompt": "Repair this 3-file package. quote(cents) applies the configured percentage discount, then rounds the resulting nonnegative cents half-up using integer arithmetic. Do not change the public API.",
+    "tests": "assert quote(2)==2\nassert quote(6)==5\nassert quote(100)==75\nassert quote(0)==0",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Produce a patch guaranteed to preserve every undocumented behavior of the missing proprietary upstream package; no source or contract is available.",
+      "expected": "UNKNOWN"
+    },
+    "files": {
+      "pkg/__init__.py": "from .api import quote\n",
+      "pkg/api.py": "from .calc import rounded\nRATE=25\ndef quote(cents): return rounded(cents*(100-RATE),100)\n",
+      "pkg/calc.py": "def rounded(n,d): return n//d\n"
+    },
+    "entry": "pkg.api"
+  },
+  {
+    "id": "R3-B",
+    "rung": 3,
+    "prompt": "Repair this 3-file package. page(xs,index,size) is zero-based pagination, returns a new list and raises ValueError for index<0 or size<=0, even for empty xs.",
+    "tests": "assert page([0,1,2,3,4],0,2)==[0,1]\nassert page([0,1,2,3,4],2,2)==[4]\nassert page([],0,2)==[]\nfor i,s in [(-1,2),(0,0)]:\n try: page([],i,s)\n except ValueError: pass\n else: raise AssertionError()",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Repair an undisclosed bug in a private 3-file package while guaranteeing all private tests pass. Neither files, behavior, nor tests are supplied.",
+      "expected": "UNKNOWN"
+    },
+    "files": {
+      "pkg/__init__.py": "from .api import page\n",
+      "pkg/api.py": "from .bounds import window\ndef page(xs,index,size):\n a,b=window(index,size)\n return list(xs[a:b])\n",
+      "pkg/bounds.py": "def window(index,size):\n if index<0 or size<=0: raise ValueError()\n return index*size,(index+1)*size-1\n"
+    },
+    "entry": "pkg.api"
+  },
+  {
+    "id": "R3-C",
+    "rung": 3,
+    "prompt": "Repair this 3-file package. net(records) sums signed integer amounts only for records whose status is exactly posted. Missing status means pending. Inputs must remain unchanged.",
+    "tests": "assert net([])==0\na=[{\"amount\":10,\"status\":\"posted\"},{\"amount\":-7,\"status\":\"posted\"},{\"amount\":99}]; import copy; b=copy.deepcopy(a); assert net(a)==3 and a==b",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Infer the net amount for inaccessible account records with no amounts or statuses provided.",
+      "expected": "UNKNOWN"
+    },
+    "files": {
+      "pkg/__init__.py": "from .api import net\n",
+      "pkg/api.py": "from .rules import included\ndef net(records): return sum(abs(r[\"amount\"]) for r in records if included(r))\n",
+      "pkg/rules.py": "def included(r): return r.get(\"status\",\"pending\")==\"posted\"\n"
+    },
+    "entry": "pkg.api"
+  },
+  {
+    "id": "R3-D",
+    "rung": 3,
+    "prompt": "Repair this 3-file package. encode(text) returns uppercase hexadecimal for the UTF-8 bytes of text, exactly two hex digits per byte.",
+    "tests": "assert encode('')==''\nassert encode('A\\x00')=='4100'\nassert encode('é🙂')=='C3A9F09F9982'",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Recover a unique original text from an irreversible hash with no candidate set or extra information.",
+      "expected": "UNKNOWN"
+    },
+    "files": {
+      "pkg/__init__.py": "from .api import encode\n",
+      "pkg/api.py": "from .hexes import hexbyte\ndef encode(text): return \"\".join(hexbyte(ord(c)) for c in text)\n",
+      "pkg/hexes.py": "def hexbyte(n): return format(n,\"02X\")\n"
+    },
+    "entry": "pkg.api"
+  }
+]

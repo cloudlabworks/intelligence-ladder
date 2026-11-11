@@ -1,0 +1,130 @@
+[
+  {
+    "id": "R7-A",
+    "rung": 7,
+    "prompt": "Extend this existing package with the scale feature. Add optional keyword factor (default 1) to config.options, core.transform and api.process. options returns a dict with key 'factor'; transform returns a new list applying `x * factor` to each x; process wires options to transform. Preserve existing public behavior and existing tests; do not mutate inputs. Modify at least 3 source files. Do not modify test_existing.py or formatting.py.",
+    "files": {
+      "pkg/__init__.py": "from .api import process\n",
+      "pkg/config.py": "def options():\n return {}\n",
+      "pkg/core.py": "def transform(values):\n return list(values)\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values):\n options()\n return transform(values)\n",
+      "pkg/formatting.py": "def render(values):\n return \",\".join(map(str,values))\n",
+      "test_existing.py": "from pkg import process\nfrom pkg.formatting import render\ndef test_legacy():\n assert process([2,-1])==[2,-1]\n assert process([])==[]\n assert render([2,-1])==\"2,-1\"\n"
+    },
+    "entry": "pkg",
+    "tests": "from pkg.config import options\nfrom pkg.core import transform\nassert options()=={'factor': 1}\nassert options(factor=3)=={'factor': 3}\nassert transform([1, -2, 0],factor=3)==[3, -6, 0]\nassert process([1, -2, 0],factor=3)==[3, -6, 0]\nx=[1, -2, 0]; process(x,factor=3); assert x==[1, -2, 0]\nassert process([],factor=3)==[]\nassert process([1, -2, 0])==[1, -2, 0]",
+    "required_paths": [
+      "pkg/config.py",
+      "pkg/core.py",
+      "pkg/api.py"
+    ],
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 10,
+      "max_output_tokens": 2048
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if impossible. Add a feature to a package whose files and API are inaccessible, preserving every undocumented behavior. No package contents supplied.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R7-B",
+    "rung": 7,
+    "prompt": "Extend this existing package with the offset feature. Add optional keyword amount (default 0) to config.options, core.transform and api.process. options returns a dict with key 'amount'; transform returns a new list applying `x + amount` to each x; process wires options to transform. Preserve existing public behavior and existing tests; do not mutate inputs. Modify at least 3 source files. Do not modify test_existing.py or formatting.py.",
+    "files": {
+      "pkg/__init__.py": "from .api import process\n",
+      "pkg/config.py": "def options():\n return {}\n",
+      "pkg/core.py": "def transform(values):\n return list(values)\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values):\n options()\n return transform(values)\n",
+      "pkg/formatting.py": "def render(values):\n return \",\".join(map(str,values))\n",
+      "test_existing.py": "from pkg import process\nfrom pkg.formatting import render\ndef test_legacy():\n assert process([2,-1])==[2,-1]\n assert process([])==[]\n assert render([2,-1])==\"2,-1\"\n"
+    },
+    "entry": "pkg",
+    "tests": "from pkg.config import options\nfrom pkg.core import transform\nassert options()=={'amount': 0}\nassert options(amount=-2)=={'amount': -2}\nassert transform([1, -2, 0],amount=-2)==[-1, -4, -2]\nassert process([1, -2, 0],amount=-2)==[-1, -4, -2]\nx=[1, -2, 0]; process(x,amount=-2); assert x==[1, -2, 0]\nassert process([],amount=-2)==[]\nassert process([1, -2, 0])==[1, -2, 0]",
+    "required_paths": [
+      "pkg/config.py",
+      "pkg/core.py",
+      "pkg/api.py"
+    ],
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 10,
+      "max_output_tokens": 2048
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if impossible. Add a feature to a package whose files and API are inaccessible, preserving every undocumented behavior. No package contents supplied.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R7-C",
+    "rung": 7,
+    "prompt": "Extend this existing package with the floor feature. Add optional keyword minimum (default None) to config.options, core.transform and api.process. options returns a dict with key 'minimum'; transform returns a new list applying `x if minimum is None else max(x,minimum)` to each x; process wires options to transform. Preserve existing public behavior and existing tests; do not mutate inputs. Modify at least 3 source files. Do not modify test_existing.py or formatting.py.",
+    "files": {
+      "pkg/__init__.py": "from .api import process\n",
+      "pkg/config.py": "def options():\n return {}\n",
+      "pkg/core.py": "def transform(values):\n return list(values)\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values):\n options()\n return transform(values)\n",
+      "pkg/formatting.py": "def render(values):\n return \",\".join(map(str,values))\n",
+      "test_existing.py": "from pkg import process\nfrom pkg.formatting import render\ndef test_legacy():\n assert process([2,-1])==[2,-1]\n assert process([])==[]\n assert render([2,-1])==\"2,-1\"\n"
+    },
+    "entry": "pkg",
+    "tests": "from pkg.config import options\nfrom pkg.core import transform\nassert options()=={'minimum': None}\nassert options(minimum=2)=={'minimum': 2}\nassert transform([1, -2, 4],minimum=2)==[2, 2, 4]\nassert process([1, -2, 4],minimum=2)==[2, 2, 4]\nx=[1, -2, 4]; process(x,minimum=2); assert x==[1, -2, 4]\nassert process([],minimum=2)==[]\nassert process([1, -2, 4])==[1, -2, 4]",
+    "required_paths": [
+      "pkg/config.py",
+      "pkg/core.py",
+      "pkg/api.py"
+    ],
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 10,
+      "max_output_tokens": 2048
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if impossible. Add a feature to a package whose files and API are inaccessible, preserving every undocumented behavior. No package contents supplied.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R7-D",
+    "rung": 7,
+    "prompt": "Extend this existing package with the ceiling feature. Add optional keyword maximum (default None) to config.options, core.transform and api.process. options returns a dict with key 'maximum'; transform returns a new list applying `x if maximum is None else min(x,maximum)` to each x; process wires options to transform. Preserve existing public behavior and existing tests; do not mutate inputs. Modify at least 3 source files. Do not modify test_existing.py or formatting.py.",
+    "files": {
+      "pkg/__init__.py": "from .api import process\n",
+      "pkg/config.py": "def options():\n return {}\n",
+      "pkg/core.py": "def transform(values):\n return list(values)\n",
+      "pkg/api.py": "from .config import options\nfrom .core import transform\ndef process(values):\n options()\n return transform(values)\n",
+      "pkg/formatting.py": "def render(values):\n return \",\".join(map(str,values))\n",
+      "test_existing.py": "from pkg import process\nfrom pkg.formatting import render\ndef test_legacy():\n assert process([2,-1])==[2,-1]\n assert process([])==[]\n assert render([2,-1])==\"2,-1\"\n"
+    },
+    "entry": "pkg",
+    "tests": "from pkg.config import options\nfrom pkg.core import transform\nassert options()=={'maximum': None}\nassert options(maximum=2)=={'maximum': 2}\nassert transform([1, -2, 4],maximum=2)==[1, -2, 2]\nassert process([1, -2, 4],maximum=2)==[1, -2, 2]\nx=[1, -2, 4]; process(x,maximum=2); assert x==[1, -2, 4]\nassert process([],maximum=2)==[]\nassert process([1, -2, 4])==[1, -2, 4]",
+    "required_paths": [
+      "pkg/config.py",
+      "pkg/core.py",
+      "pkg/api.py"
+    ],
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 10,
+      "max_output_tokens": 2048
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if impossible. Add a feature to a package whose files and API are inaccessible, preserving every undocumented behavior. No package contents supplied.",
+      "expected": "UNKNOWN"
+    }
+  }
+]

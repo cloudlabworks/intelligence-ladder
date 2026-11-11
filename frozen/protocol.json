@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "repeats": 3,
+  "promotion": "Every productive task must pass >=2/3 repeats. Traps never offset productive failures.",
+  "calibration": "Run every rung even after failures.",
+  "hidden": "Never load hidden variants during calibration.",
+  "measurement": "Three repeats measure consistency, not broad reliability.",
+  "output_tokens": 512,
+  "baseline_sha256": "f2da304bc32e4c2bfb431c8f411d23e34e554e88e822add35aa4b22ebc3ba6e3",
+  "extension_rungs": [
+    6,
+    7
+  ],
+  "extension_output_tokens": 2048,
+  "extension_note": "RK1 native output cap remains 512; R6/R7 metered output budget is 2048; report this resource difference. R7 is a bounded multi-file feature, not hours-long autonomy."
+}

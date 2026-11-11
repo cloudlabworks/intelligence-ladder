@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "repeats": 3,
+  "promotion": "Every productive task must pass >=2/3 repeats. Traps never offset productive failures.",
+  "calibration": "Run every rung even after failures.",
+  "hidden": "Never load hidden variants during calibration.",
+  "measurement": "Three repeats measure consistency, not broad reliability.",
+  "output_tokens": 512,
+  "baseline_sha256": "f2da304bc32e4c2bfb431c8f411d23e34e554e88e822add35aa4b22ebc3ba6e3"
+}

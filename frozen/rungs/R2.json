@@ -1,0 +1,74 @@
+[
+  {
+    "id": "R2-A",
+    "rung": 2,
+    "prompt": "Implement utf8_prefix(text,budget): longest initial substring whose UTF-8 encoding has at most budget bytes. Never split a code point. budget is an integer >=0. No normalization.",
+    "tests": "assert utf8_prefix('',0)==''\nassert utf8_prefix('aé🙂z',0)==''\nassert utf8_prefix('aé🙂z',2)=='a'\nassert utf8_prefix('aé🙂z',3)=='aé'\nassert utf8_prefix('aé🙂z',6)=='aé'\nassert utf8_prefix('aé🙂z',7)=='aé🙂'\nassert utf8_prefix('e\\u0301',2)=='e'",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Return a Unicode string that is exactly the first byte of the UTF-8 encoding of 🙂 and is itself valid UTF-8. No replacement or empty result is allowed.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R2-B",
+    "rung": 2,
+    "prompt": "Implement histogram(values,width): dict mapping floor-division bucket indices v//width to counts for integer values; width must be a positive integer (bool is invalid), else raise ValueError, even for empty values. Do not mutate values.",
+    "tests": "assert histogram([],2)=={}\na=[-5,-4,-1,0,3,4]; assert histogram(a,4)=={-2:1,-1:2,0:2,1:1}; assert a==[-5,-4,-1,0,3,4]\nfor w in [0,-1,True,1.5]:\n try: histogram([],w)\n except ValueError: pass\n else: raise AssertionError(w)",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Implement histogram so histogram([],0) both raises ValueError and returns {} normally on the same invocation.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R2-C",
+    "rung": 2,
+    "prompt": "Implement padded(rows,fill): return new list of new row lists, right-padded with fill to the widest row length. Empty rows list gives []. Never mutate inputs; all output row lists must be independent, including repeated input rows.",
+    "tests": "assert padded([],0)==[]\nassert padded([[],[]],'x')==[[],[]]\na=[[1],[],[2,3]]; b=padded(a,0); assert b==[[1,0],[0,0],[2,3]]; b[0][0]=9; assert a==[[1],[],[2,3]]\nx=[1]; b=padded([x,x],None); b[0].append(8); assert b[1]==[1] and x==[1]",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Return padded rows with every output row object identical to its input row object, while also requiring all output rows to be new objects.",
+      "expected": "UNKNOWN"
+    }
+  },
+  {
+    "id": "R2-D",
+    "rung": 2,
+    "prompt": "Implement letter_runs(text): list of maximal contiguous alphabetic runs according to str.isalpha(), each casefolded AFTER segmentation. Do not normalize. Nonletters separate runs.",
+    "tests": "assert letter_runs('')==[]\nassert letter_runs('12_!')==[]\nassert letter_runs('Straße-ÉCOLE 猫42DOG')==['strasse','école','猫','dog']\nassert letter_runs('A\\u0301B')==['a','b']",
+    "budgets": {
+      "model_turn_seconds": 240,
+      "task_seconds": 900,
+      "max_model_turns": 1,
+      "max_tool_calls": 0,
+      "execution_seconds": 8,
+      "max_output_tokens": 512
+    },
+    "trap": {
+      "prompt": "Return exactly UNKNOWN if this request cannot be determined or is contradictory. Recover the exact original capitalization from letter_runs output [\"strasse\"], without the original input or any other information.",
+      "expected": "UNKNOWN"
+    }
+  }
+]

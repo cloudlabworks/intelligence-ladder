@@ -1,0 +1,38 @@
+{
+  "R1-A": "def stair_total(n): return n*(n+1)*(2*n+1)//6",
+  "R1-B": "def adjacent_changes(xs): return sum(a!=b for a,b in zip(xs,xs[1:]))",
+  "R1-C": "def box_area(points):\n x,y=zip(*points)\n return (max(x)-min(x))*(max(y)-min(y))",
+  "R1-D": "def ordinal_day(month,day): return sum([31,28,31,30,31,30,31,31,30,31,30,31][:month-1])+day",
+  "R2-A": "def utf8_prefix(text,budget):\n out=''\n for c in text:\n  n=len(c.encode('utf-8'))\n  if n>budget: break\n  out+=c; budget-=n\n return out",
+  "R2-B": "def histogram(values,width):\n if type(width) is not int or width<=0: raise ValueError()\n d={}\n for v in values: d[v//width]=d.get(v//width,0)+1\n return d",
+  "R2-C": "def padded(rows,fill):\n n=max(map(len,rows),default=0)\n return [list(r)+[fill]*(n-len(r)) for r in rows]",
+  "R2-D": "def letter_runs(text):\n out=[]; run=''\n for c in text:\n  if c.isalpha(): run+=c\n  elif run: out.append(run.casefold()); run=''\n if run: out.append(run.casefold())\n return out",
+  "R3-A": {
+    "pkg/calc.py": "def rounded(n,d): return (2*n+d)//(2*d)\n"
+  },
+  "R3-B": {
+    "pkg/bounds.py": "def window(index,size):\n if index<0 or size<=0: raise ValueError()\n return index*size,(index+1)*size\n"
+  },
+  "R3-C": {
+    "pkg/api.py": "from .rules import included\ndef net(records): return sum(r[\"amount\"] for r in records if included(r))\n"
+  },
+  "R3-D": {
+    "pkg/api.py": "from .hexes import hexbyte\ndef encode(text): return \"\".join(hexbyte(n) for n in text.encode(\"utf-8\"))\n"
+  },
+  "R4-A": {
+    "worker.py": "from config import TTL\ndef expires(start): return start+TTL*1000\n"
+  },
+  "R4-B": {
+    "worker.py": "from config import LOW,HIGH\ndef accepted(n): return LOW<=n<HIGH\n"
+  },
+  "R4-C": {
+    "worker.py": "from config import FREE,CENTS\ndef charge(n): return max(0,n-FREE)*CENTS\n"
+  },
+  "R4-D": {
+    "worker.py": "from config import PREFIX,SUFFIX\ndef frame(s): return PREFIX+s+SUFFIX\n"
+  },
+  "R5-A": "def inventory(start,events):\n d=dict(start)\n for k,v in events:\n  n=d.get(k,0)+v\n  if n>=0:d[k]=n\n return d",
+  "R5-B": "def leaderboard(events,k):\n d={}\n for n,p in events:d[n]=d.get(n,0)+p\n return sorted(d.items(),key=lambda x:(-x[1],x[0]))[:max(0,k)]",
+  "R5-C": "def schedule(jobs,limit):\n out=[]; now=0\n for id,r,d in jobs:\n  s=max(now,r); f=s+d\n  if f<=limit:out.append((id,s,f)); now=f\n return out",
+  "R5-D": "def runs(values):\n out=[]\n for v in values:\n  if out and out[-1][0]==v:out[-1]=(v,out[-1][1]+1)\n  else:out.append((v,1))\n return out"
+}
